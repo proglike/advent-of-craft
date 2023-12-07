@@ -1,9 +1,6 @@
 package ci;
 
-import ci.dependencies.Config;
-import ci.dependencies.Emailer;
-import ci.dependencies.Logger;
-import ci.dependencies.Project;
+import ci.dependencies.*;
 
 public class Pipeline {
     private final Config config;
@@ -17,47 +14,48 @@ public class Pipeline {
     }
 
     public void run(Project project) {
-        boolean testsPassed;
-        boolean deploySuccessful;
 
-        if (project.hasTests()) {
-            if ("success".equals(project.runTests())) {
-                log.info("Tests passed");
-                testsPassed = true;
-            } else {
-                log.error("Tests failed");
-                testsPassed = false;
-            }
-        } else {
-            log.info("No tests");
-            testsPassed = true;
-        }
+        StepExecutionStatus testResult = project.runTestsIfPresents();
+        logTestResult(testResult);
 
-        if (testsPassed) {
-            if ("success".equals(project.deploy())) {
-                log.info("Deployment successful");
-                deploySuccessful = true;
-            } else {
-                log.error("Deployment failed");
-                deploySuccessful = false;
-            }
-        } else {
-            deploySuccessful = false;
-        }
+        StepExecutionStatus deployResult =
+                testResult == StepExecutionStatus.FAILURE ?
+                        StepExecutionStatus.NO_EXECUTION :
+                        project.deploy();
+        logDeployResult(deployResult);
 
+        sendMailReport(deployResult);
+    }
+
+    private void sendMailReport(StepExecutionStatus deployExecutionStatus) {
         if (config.sendEmailSummary()) {
             log.info("Sending email");
-            if (testsPassed) {
-                if (deploySuccessful) {
-                    emailer.send("Deployment completed successfully");
-                } else {
-                    emailer.send("Deployment failed");
-                }
-            } else {
-                emailer.send("Tests failed");
-            }
+            emailer.send(computeMailMessage(deployExecutionStatus));
         } else {
             log.info("Email disabled");
+        }
+    }
+
+    private static String computeMailMessage(StepExecutionStatus deployExecutionStatus) {
+        return switch (deployExecutionStatus) {
+            case SUCCESS -> "Deployment completed successfully";
+            case FAILURE -> "Deployment failed";
+            case NO_EXECUTION -> "Tests failed";
+        };
+    }
+
+    private void logDeployResult(StepExecutionStatus deployExecutionStatus) {
+        switch (deployExecutionStatus) {
+            case SUCCESS -> log.info("Deployment successful");
+            case FAILURE -> log.error("Deployment failed");
+        }
+    }
+
+    private void logTestResult(StepExecutionStatus testExecutionStatus) {
+        switch (testExecutionStatus) {
+            case NO_EXECUTION -> log.info("No tests");
+            case SUCCESS -> log.info("Tests passed");
+            case FAILURE -> log.error("Tests failed");
         }
     }
 }
