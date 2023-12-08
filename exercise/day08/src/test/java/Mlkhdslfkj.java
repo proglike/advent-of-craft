@@ -2,11 +2,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.function.IntPredicate;
+
 public class Mlkhdslfkj {
     private static final String VALID_PASSWORD = "Azerty9%";
 
     // Contains at least 8 characters ✅
-    // Contains at least one capital letter
+    // Contains at least one capital letter ✅
     // Contains at least one lowercase letter
     // Contains at least a number
     // Contains at least a special character in this list . * # @ $ % &.
@@ -16,6 +18,11 @@ public class Mlkhdslfkj {
     @Test
     void valid_password() {
         assertThat(verify(VALID_PASSWORD)).isTrue();
+    }
+
+    @Test
+    void invalid_password() {
+        assertThat(verify("fdjksghpzhvjz")).isFalse();
     }
 
     @Test
@@ -42,12 +49,40 @@ public class Mlkhdslfkj {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void must_be_valid_when_has_a_capital_letter(){
+        //given
+        String password = "A";
+
+        //when
+        boolean result=verifyCapital(password);
+
+        //then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void must_be_invalid_when_no_capital_letter(){
+        //given
+        String password = "a";
+
+        //when
+        boolean result=verifyCapital(password);
+
+        //then
+        assertThat(result).isFalse();
+    }
+
+    private boolean verifyCapital(String password) {
+        return !password.equals(password.toLowerCase());
+    }
+
     private boolean verifySizeMin(String password) {
         return password.length() >= 8;
     }
 
     private boolean verify(String password) {
-        return verifySizeMin(password);
+        return verifySizeMin(password) && verifyCapital(password);
     }
 
 }
