@@ -1,10 +1,8 @@
-import lombok.experimental.ExtensionMethod;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtensionMethod({PasswordExtensions.class})
-public class Mlkhdslfkj {
+public class PasswordValidatorTest {
 
     private static final String VALID_PASSWORD = "Azerty9%";
 
@@ -15,17 +13,20 @@ public class Mlkhdslfkj {
     // Contains at least a special character in this list . * # @ $ % &.
     // Any other characters are not authorized.
 
+
+    private final PasswordValidator passwordValidator = new PasswordValidator();
+
     @Test
     void valid_password() {
-        assertThat(verify(VALID_PASSWORD)).isTrue();
+        assertThat(passwordValidator.verify(VALID_PASSWORD)).isTrue();
     }
 
     @Test
     void invalid_password() {
-        assertThat(verify("jZ")).isFalse();
-        assertThat(verify("fdjksghpzhvjz")).isFalse();
-        assertThat(verify("FDJKSGHPZHVJZ")).isFalse();
-        assertThat(verify("FDJKSGHPadgJZ")).isFalse();
+        assertThat(passwordValidator.verify("jZ")).isFalse();
+        assertThat(passwordValidator.verify("fdjksghpzhvjz")).isFalse();
+        assertThat(passwordValidator.verify("FDJKSGHPZHVJZ")).isFalse();
+        assertThat(passwordValidator.verify("FDJKSGHPadgJZ")).isFalse();
     }
 
     @Test
@@ -34,7 +35,7 @@ public class Mlkhdslfkj {
         String password = "abcdefghij";
 
         // when
-        boolean result = verifySizeMin(password);
+        boolean result = passwordValidator.verifySizeMin(password);
 
         // then
         assertThat(result).isTrue();
@@ -46,7 +47,7 @@ public class Mlkhdslfkj {
         String password = "abc";
 
         // when
-        boolean result = verifySizeMin(password);
+        boolean result = passwordValidator.verifySizeMin(password);
 
         // then
         assertThat(result).isFalse();
@@ -58,7 +59,7 @@ public class Mlkhdslfkj {
         String password = "A";
 
         //when
-        boolean result = verifyCapital(password);
+        boolean result = passwordValidator.verifyCapital(password);
 
         //then
         assertThat(result).isTrue();
@@ -70,7 +71,7 @@ public class Mlkhdslfkj {
         String password = "a";
 
         //when
-        boolean result = verifyCapital(password);
+        boolean result = passwordValidator.verifyCapital(password);
 
         //then
         assertThat(result).isFalse();
@@ -82,7 +83,7 @@ public class Mlkhdslfkj {
         String password = "a";
 
         //when
-        boolean result = verifyLowerCase(password);
+        boolean result = passwordValidator.verifyLowerCase(password);
 
         //then
         assertThat(result).isTrue();
@@ -94,7 +95,7 @@ public class Mlkhdslfkj {
         String password = "A";
 
         //when
-        boolean result = verifyLowerCase(password);
+        boolean result = passwordValidator.verifyLowerCase(password);
 
         //then
         assertThat(result).isFalse();
@@ -107,7 +108,7 @@ public class Mlkhdslfkj {
 
         //when
 
-        boolean result = verifyNumber(password);
+        boolean result = passwordValidator.verifyNumber(password);
         //then
         assertThat(result).isTrue();
     }
@@ -118,34 +119,10 @@ public class Mlkhdslfkj {
         String password = "a";
 
         //when
-        boolean result = verifyNumber(password);
+        boolean result = passwordValidator.verifyNumber(password);
 
         //then
         assertThat(result).isFalse();
     }
 
-    private boolean verifyNumber(String password) {
-        return password.verifyThatAtLeastOne(Character::isDigit);
-    }
-
-    private boolean verifyLowerCase(String password) {
-        return password.verifyThatAtLeastOne(Character::isLowerCase);
-    }
-
-    private boolean verifyCapital(String password) {
-        return password.verifyThatAtLeastOne(Character::isUpperCase);
-    }
-
-    private boolean verifySizeMin(String password) {
-        return password.length() >= 8;
-    }
-
-    private boolean verify(String password) {
-        return (
-                verifySizeMin(password) &&
-                        verifyCapital(password) &&
-                        verifyLowerCase(password) &&
-                        verifyNumber(password)
-        );
-    }
 }
