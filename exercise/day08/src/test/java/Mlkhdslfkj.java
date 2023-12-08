@@ -1,120 +1,149 @@
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.function.IntPredicate;
+import org.junit.jupiter.api.Test;
 
 public class Mlkhdslfkj {
-    private static final String VALID_PASSWORD = "Azerty9%";
 
-    // Contains at least 8 characters ✅
-    // Contains at least one capital letter ✅
-    // Contains at least one lowercase letter
-    // Contains at least a number
-    // Contains at least a special character in this list . * # @ $ % &.
-    // Any other characters are not authorized.
+  private static final String VALID_PASSWORD = "Azerty9%";
 
+  // Contains at least 8 characters ✅
+  // Contains at least one capital letter ✅
+  // Contains at least one lowercase letter ✅
+  // Contains at least a number ✅
+  // Contains at least a special character in this list . * # @ $ % &.
+  // Any other characters are not authorized.
 
-    @Test
-    void valid_password() {
-        assertThat(verify(VALID_PASSWORD)).isTrue();
-    }
+  @Test
+  void valid_password() {
+    assertThat(verify(VALID_PASSWORD)).isTrue();
+  }
 
-    @Test
-    void invalid_password() {
-        assertThat(verify("jZ")).isFalse();
-        assertThat(verify("fdjksghpzhvjz")).isFalse();
-        assertThat(verify("FDJKSGHPZHVJZ")).isFalse();
-    }
+  @Test
+  void invalid_password() {
+    assertThat(verify("jZ")).isFalse();
+    assertThat(verify("fdjksghpzhvjz")).isFalse();
+    assertThat(verify("FDJKSGHPZHVJZ")).isFalse();
+    assertThat(verify("FDJKSGHPadgJZ")).isFalse();
+  }
 
-    @Test
-    void must_be_valid_when_password_has_at_least_8_characters() {
-        // given
-        String password = "abcdefghij";
+  @Test
+  void must_be_valid_when_password_has_at_least_8_characters() {
+    // given
+    String password = "abcdefghij";
 
-        // when
-        boolean result = verifySizeMin(password);
+    // when
+    boolean result = verifySizeMin(password);
 
-        // then
-        assertThat(result).isTrue();
-    }
+    // then
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void must_be_invalid_when_less_than_8_characters() {
-        // given
-        String password = "abc";
+  @Test
+  void must_be_invalid_when_less_than_8_characters() {
+    // given
+    String password = "abc";
 
-        // when
-        boolean result = verifySizeMin(password);
+    // when
+    boolean result = verifySizeMin(password);
 
-        // then
-        assertThat(result).isFalse();
-    }
+    // then
+    assertThat(result).isFalse();
+  }
 
-    @Test
-    void must_be_valid_when_has_a_capital_letter(){
-        //given
-        String password = "A";
+  @Test
+  void must_be_valid_when_has_a_capital_letter() {
+    //given
+    String password = "A";
 
-        //when
-        boolean result=verifyCapital(password);
+    //when
+    boolean result = verifyCapital(password);
 
-        //then
-        assertThat(result).isTrue();
-    }
+    //then
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void must_be_invalid_when_no_capital_letter(){
-        //given
-        String password = "a";
+  @Test
+  void must_be_invalid_when_no_capital_letter() {
+    //given
+    String password = "a";
 
-        //when
-        boolean result=verifyCapital(password);
+    //when
+    boolean result = verifyCapital(password);
 
-        //then
-        assertThat(result).isFalse();
-    }
+    //then
+    assertThat(result).isFalse();
+  }
 
-    @Test
-    void must_be_valid_when_has_a_lower_case_letter(){
-        //given
-        String password = "a";
+  @Test
+  void must_be_valid_when_has_a_lower_case_letter() {
+    //given
+    String password = "a";
 
-        //when
-        boolean result=verifyLowerCase(password);
+    //when
+    boolean result = verifyLowerCase(password);
 
-        //then
-        assertThat(result).isTrue();
-    }
+    //then
+    assertThat(result).isTrue();
+  }
 
-    @Test
-    void must_be_invalid_when_no_lower_case_letter(){
-        //given
-        String password = "A";
+  @Test
+  void must_be_invalid_when_no_lower_case_letter() {
+    //given
+    String password = "A";
 
-        //when
-        boolean result=verifyLowerCase(password);
+    //when
+    boolean result = verifyLowerCase(password);
 
-        //then
-        assertThat(result).isFalse();
-    }
+    //then
+    assertThat(result).isFalse();
+  }
 
+  @Test
+  void must_be_valid_when_has_a_number() {
+    //given
+    String password = "1a";
 
+    //when
 
-    private boolean verifyLowerCase(String password) {
-        return !password.equals(password.toUpperCase());
-    }
+    boolean result = verifyNumber(password);
+    //then
+    assertThat(result).isTrue();
+  }
 
-    private boolean verifyCapital(String password) {
-        return !password.equals(password.toLowerCase());
-    }
+  @Test
+  void must_be_invalid_when_has_no_number() {
+    //given
+    String password = "a";
 
-    private boolean verifySizeMin(String password) {
-        return password.length() >= 8;
-    }
+    //when
+    boolean result = verifyNumber(password);
 
-    private boolean verify(String password) {
-        return verifySizeMin(password) && verifyCapital(password) && verifyLowerCase(password);
-    }
+    //then
+    assertThat(result).isFalse();
+  }
 
+  private boolean verifyNumber(String password) {
+    return password.matches(".*\\d.*");
+  }
+
+  private boolean verifyLowerCase(String password) {
+    return !password.equals(password.toUpperCase());
+  }
+
+  private boolean verifyCapital(String password) {
+    return !password.equals(password.toLowerCase());
+  }
+
+  private boolean verifySizeMin(String password) {
+    return password.length() >= 8;
+  }
+
+  private boolean verify(String password) {
+    return (
+      verifySizeMin(password) &&
+      verifyCapital(password) &&
+      verifyLowerCase(password) &&
+      verifyNumber(password)
+    );
+  }
 }
