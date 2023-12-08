@@ -22,7 +22,9 @@ public class Mlkhdslfkj {
 
     @Test
     void invalid_password() {
+        assertThat(verify("jZ")).isFalse();
         assertThat(verify("fdjksghpzhvjz")).isFalse();
+        assertThat(verify("FDJKSGHPZHVJZ")).isFalse();
     }
 
     @Test
@@ -73,6 +75,36 @@ public class Mlkhdslfkj {
         assertThat(result).isFalse();
     }
 
+    @Test
+    void must_be_valid_when_has_a_lower_case_letter(){
+        //given
+        String password = "a";
+
+        //when
+        boolean result=verifyLowerCase(password);
+
+        //then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void must_be_invalid_when_no_lower_case_letter(){
+        //given
+        String password = "A";
+
+        //when
+        boolean result=verifyLowerCase(password);
+
+        //then
+        assertThat(result).isFalse();
+    }
+
+
+
+    private boolean verifyLowerCase(String password) {
+        return !password.equals(password.toUpperCase());
+    }
+
     private boolean verifyCapital(String password) {
         return !password.equals(password.toLowerCase());
     }
@@ -82,7 +114,7 @@ public class Mlkhdslfkj {
     }
 
     private boolean verify(String password) {
-        return verifySizeMin(password) && verifyCapital(password);
+        return verifySizeMin(password) && verifyCapital(password) && verifyLowerCase(password);
     }
 
 }
