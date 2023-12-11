@@ -5,10 +5,18 @@ import java.util.stream.Collectors;
 
 public class Client {
     private final Map<String, Double> orderLines;
-    private double totalAmount;
+    private final double totalAmount;
 
     public Client(Map<String, Double> orderLines) {
         this.orderLines = orderLines;
+        totalAmount = computeTotalAmount(orderLines);
+    }
+
+    private static double computeTotalAmount(Map<String, Double> orderLines) {
+        return orderLines.values()
+                .stream()
+                .mapToDouble(d -> d)
+                .sum();
     }
 
     public String toStatement() {
@@ -19,7 +27,6 @@ public class Client {
     }
 
     private String formatLine(String name, Double value) {
-        totalAmount += value;
         return name + " for " + value + "€";
     }
 
