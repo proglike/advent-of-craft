@@ -1,11 +1,11 @@
 package games;
 
+import static games.Replacers.*;
+
 public class FizzBuzz {
+
     public static final int MIN = 0;
     public static final int MAX = 100;
-    public static final int FIZZ = 3;
-    public static final int BUZZ = 5;
-    public static final int FIZZBUZZ = 15;
 
     private FizzBuzz() {
     }
@@ -18,20 +18,10 @@ public class FizzBuzz {
     }
 
     private static String convertSafely(Integer input) {
-        if (is(FIZZBUZZ, input)) {
-            return "FizzBuzz";
-        }
-        if (is(FIZZ, input)) {
-            return "Fizz";
-        }
-        if (is(BUZZ, input)) {
-            return "Buzz";
-        }
-        return input.toString();
-    }
-
-    private static boolean is(Integer divisor, Integer input) {
-        return input % divisor == 0;
+        return FIZZBUZZ.replace(input)
+                .or(() -> FIZZ.replace(input))
+                .or(() -> BUZZ.replace(input))
+                .orElseGet(input::toString);
     }
 
     private static boolean isOutOfRange(Integer input) {
