@@ -1,7 +1,7 @@
 package document;
 
 import io.vavr.collection.List;
-import org.approvaltests.Approvals;
+import org.approvaltests.combinations.CombinationApprovals;
 import org.junit.jupiter.api.Test;
 
 class DocumentTemplateTypeTest {
@@ -16,32 +16,16 @@ class DocumentTemplateTypeTest {
                 "SPEC",
                 "GLPP",
                 "GLPM",
-                "Autre");
+                "Autre Document Type");
 
         List<String> recordTypes = List.of((RecordType.values()))
                 .map(RecordType::name)
-                .append("Autre valeur");
+                .append("Autre Record Type");
 
-        List<Execution> results = documentTypes
-                .flatMap(d -> recordTypes.map(r -> new ExecutionParams(d, r)))
-                .map(DocumentTemplateTypeTest::getExecutionResult);
-
-        Approvals.verifyAll("testAllCombinaisons", results);
-    }
-
-    private static Execution getExecutionResult(ExecutionParams params) {
-        try {
-            DocumentTemplateType documentTemplateType = DocumentTemplateType.fromDocumentTypeAndRecordType(params.documentType, params.recordType);
-            return new Execution(params, documentTemplateType.name());
-        } catch (RuntimeException e) {
-            return new Execution(params, e.getMessage());
-        }
-    }
-
-    private record ExecutionParams(String documentType, String recordType) {
-    }
-
-    private record Execution(ExecutionParams params, String result) {
+        CombinationApprovals.verifyAllCombinations(
+                DocumentTemplateType::fromDocumentTypeAndRecordType,
+                documentTypes.toJavaArray(String[]::new),
+                recordTypes.toJavaArray(String[]::new));
     }
 
 }
