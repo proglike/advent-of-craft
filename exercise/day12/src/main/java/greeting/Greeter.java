@@ -1,25 +1,20 @@
 package greeting;
 
+import static java.util.Objects.requireNonNullElse;
+
 public class Greeter {
-    String formality;
+    Formality formality = Formality.NONE;
 
     public String greet() {
-        if (this.formality == null) {
-            return "Hello.";
-        }
-
-        if (this.formality.equals("formal")) {
-            return "Good evening, sir.";
-        } else if (this.formality.equals("casual")) {
-            return "Sup bro?";
-        } else if (this.formality.equals("intimate")) {
-            return "Hello Darling!";
-        } else {
-            return "Hello.";
-        }
+        return switch (this.formality) {
+            case FORMAL -> "Good evening, sir.";
+            case CASUAL -> "Sup bro?";
+            case INTIMATE -> "Hello Darling!";
+            case NONE -> "Hello.";
+        };
     }
 
-    public void setFormality(String formality) {
-        this.formality = formality;
+    public void setFormality(Formality formality) {
+        this.formality = requireNonNullElse(formality, Formality.NONE);
     }
 }
