@@ -15,8 +15,7 @@ class GreeterTest {
 
     @Test
     void saysHelloFormally() {
-        var greeter = new Greeter();
-        greeter.setFormality(Formality.FORMAL);
+        var greeter = new Greeter(Formality.FORMAL);
 
         assertThat(greeter.greet())
                 .isEqualTo("Good evening, sir.");
@@ -24,8 +23,7 @@ class GreeterTest {
 
     @Test
     void saysHelloCasually() {
-        var greeter = new Greeter();
-        greeter.setFormality(Formality.CASUAL);
+        var greeter = new Greeter(Formality.CASUAL);
 
         assertThat(greeter.greet())
                 .isEqualTo("Sup bro?");
@@ -33,8 +31,7 @@ class GreeterTest {
 
     @Test
     void saysHelloIntimately() {
-        var greeter = new Greeter();
-        greeter.setFormality(Formality.INTIMATE);
+        var greeter = new Greeter(Formality.INTIMATE);
 
         assertThat(greeter.greet())
                 .isEqualTo("Hello Darling!");
