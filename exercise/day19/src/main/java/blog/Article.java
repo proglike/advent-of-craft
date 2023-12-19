@@ -1,6 +1,7 @@
 package blog;
 
 import io.vavr.collection.Seq;
+import io.vavr.control.Try;
 
 import java.time.LocalDate;
 
@@ -39,6 +40,15 @@ public class Article {
 
     public Seq<Comment> getComments() {
         return comments;
+    }
+
+    public Try<Article> addComment2(String commentText, String author) {
+        var comment = new Comment(commentText, author, LocalDate.now());
+
+        if (comments.contains(comment)) {
+            return Try.failure(new CommentAlreadyExistException());
+        }
+        return Try.success(new Article(name, content, comments.append(comment)));
     }
 }
 

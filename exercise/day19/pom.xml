@@ -15,6 +15,7 @@
     <properties>
         <instancio-junit.version>3.0.0</instancio-junit.version>
         <vavr.version>0.10.4</vavr.version>
+        <assertj-vavr.version>0.4.3</assertj-vavr.version>
     </properties>
 
     <dependencies>
@@ -28,6 +29,12 @@
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
             <version>${vavr.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-vavr</artifactId>
+            <version>${assertj-vavr.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

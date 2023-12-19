@@ -1,6 +1,8 @@
 package blog;
 
+import io.vavr.control.Try;
 import org.assertj.core.api.ThrowingConsumer;
+import org.assertj.vavr.api.VavrAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -14,25 +16,52 @@ import static org.instancio.Instancio.create;
 class ArticleTests {
     private Article article;
 
-    @Test
-    void should_add_comment_in_an_article() {
-        when(article -> article.addComment(COMMENT_TEXT, AUTHOR));
-        then(article -> {
-            assertThat(article.getComments()).hasSize(1);
-            assertComment(article.getComments().get(0), COMMENT_TEXT, AUTHOR);
-        });
+    @Nested
+    class Legacy {
+        @Test
+        void should_add_comment_in_an_article() {
+            when(article -> article.addComment(COMMENT_TEXT, AUTHOR));
+            then(article -> {
+                assertThat(article.getComments()).hasSize(1);
+                assertComment(article.getComments().get(0), COMMENT_TEXT, AUTHOR);
+            });
+        }
+
+        @Test
+        void should_add_comment_in_an_article_containing_already_a_comment() {
+            final var newComment = create(String.class);
+            final var newAuthor = create(String.class);
+
+            when(ArticleBuilder::commented, article -> article.addComment(newComment, newAuthor));
+            then(article -> {
+                assertThat(article.getComments()).hasSize(2);
+                assertComment(article.getComments().last(), newComment, newAuthor);
+            });
+        }
     }
 
-    @Test
-    void should_add_comment_in_an_article_containing_already_a_comment() {
-        final var newComment = create(String.class);
-        final var newAuthor = create(String.class);
+    @Nested
+    class New {
+        @Test
+        void should_add_comment_in_an_article() {
+            Article article = anArticle().build();
 
-        when(ArticleBuilder::commented, article -> article.addComment(newComment, newAuthor));
-        then(article -> {
-            assertThat(article.getComments()).hasSize(2);
-            assertComment(article.getComments().last(), newComment, newAuthor);
-        });
+            Try<Article> commentedArticle = article.addComment2(COMMENT_TEXT, AUTHOR);
+
+            VavrAssertions.assertThat(commentedArticle)
+                          .usingFieldByFieldValueComparator()
+                          .contains(article.addComment(COMMENT_TEXT, AUTHOR));
+        }
+
+        @Test
+        void should_fail_when_comment_already_exists() {
+            Article article = anArticle().commented().build();
+
+            Try<Article> spammedArticle = article.addComment2(COMMENT_TEXT, AUTHOR);
+
+            VavrAssertions.assertThat(spammedArticle)
+                          .failBecauseOf(CommentAlreadyExistException.class);
+        }
     }
 
     private static void assertComment(Comment comment, String commentText, String author) {
