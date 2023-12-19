@@ -63,6 +63,8 @@ Here are the different challenges :
 - [Day 15: Put a code under tests.](exercise/day15/docs/challenge.md)
 - [Day 16: Make this code immutable.](exercise/day16/docs/challenge.md)
 - [Day 17: Design one test that has the impact of thousands.](exercise/day17/docs/challenge.md)
+- [Day 18: Automatically detect Linguistic Anti-Patterns (LAP).](exercise/day18/docs/challenge.md)
+- [Day 19: Loosing up dead weight.](exercise/day19/docs/challenge.md)
 
 ### Solutions
 A solution proposal will be published here every day during the `Advent Of Craft` containing `the code` and a `step by step` guide.
@@ -83,6 +85,8 @@ A solution proposal will be published here every day during the `Advent Of Craft
 - [Day 14: Do not use exceptions anymore.](solution/day14/docs/step-by-step.md)
 - [Day 15: Put a code under tests.](solution/day15/docs/step-by-step.md)
 - [Day 16: Make this code immutable.](solution/day16/docs/step-by-step.md)
+- [Day 17: Design one test that has the impact of thousands.](solution/day17/docs/step-by-step.md)
+- [Day 18: Automatically detect Linguistic Anti-Patterns (LAP).](solution/day18/docs/step-by-step.md)
  
 ## Contributors
 
