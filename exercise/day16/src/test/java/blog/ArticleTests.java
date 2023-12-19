@@ -17,6 +17,7 @@ class ArticleTests {
     @Test
     void should_add_comment_in_an_article() throws CommentAlreadyExistException {
         when(article -> article.addComment(COMMENT_TEXT, AUTHOR));
+
         then(article -> {
             assertThat(article.getComments()).hasSize(1);
             assertComment(article.getComments().get(0), COMMENT_TEXT, AUTHOR);
@@ -29,6 +30,7 @@ class ArticleTests {
         final var newAuthor = create(String.class);
 
         when(ArticleBuilder::commented, article -> article.addComment(newComment, newAuthor));
+
         then(article -> {
             assertThat(article.getComments()).hasSize(2);
             assertComment(article.getComments().getLast(), newComment, newAuthor);
@@ -54,16 +56,16 @@ class ArticleTests {
         assertThat(comment.author()).isEqualTo(author);
     }
 
-    private void when(ArticleBuilder articleBuilder, ThrowingConsumer<Article> act) throws CommentAlreadyExistException {
+    private void when(ArticleBuilder articleBuilder, Function<Article, Article> act) throws CommentAlreadyExistException {
         article = articleBuilder.build();
-        act.accept(article);
+        article = act.apply(article);
     }
 
-    private void when(ThrowingConsumer<Article> act) throws CommentAlreadyExistException {
+    private void when(Function<Article, Article> act) throws CommentAlreadyExistException {
         when(anArticle(), act);
     }
 
-    private void when(Function<ArticleBuilder, ArticleBuilder> options, ThrowingConsumer<Article> act) throws Throwable {
+    private void when(Function<ArticleBuilder, ArticleBuilder> options, Function<Article, Article> act) throws Throwable {
         when(options.apply(anArticle()), act);
     }
 

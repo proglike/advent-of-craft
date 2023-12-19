@@ -2,20 +2,25 @@ package blog;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Article {
     private final String name;
     private final String content;
-    private final ArrayList<Comment> comments;
+    private final List<Comment> comments;
 
     public Article(String name, String content) {
-        this.name = name;
-        this.content = content;
-        this.comments = new ArrayList<>();
+        this(name, content, new ArrayList<>());
     }
 
-    private void addComment(
+    private Article(String name, String content, List<Comment> comments) {
+        this.name = name;
+        this.content = content;
+        this.comments = Collections.unmodifiableList(comments);
+    }
+
+    private Article addComment(
             String text,
             String author,
             LocalDate creationDate) throws CommentAlreadyExistException {
@@ -23,11 +28,15 @@ public class Article {
 
         if (comments.contains(comment)) {
             throw new CommentAlreadyExistException();
-        } else comments.add(comment);
+        }
+
+        ArrayList<Comment> updatedComments = new ArrayList<>(comments);
+        updatedComments.add(comment);
+        return new Article(name, content, updatedComments);
     }
 
-    public void addComment(String text, String author) throws CommentAlreadyExistException {
-        addComment(text, author, LocalDate.now());
+    public Article addComment(String text, String author) throws CommentAlreadyExistException {
+        return addComment(text, author, LocalDate.now());
     }
 
     public List<Comment> getComments() {
